@@ -12,10 +12,9 @@ The PySHP library is required in order for the library to work. A shapefile of t
 
 All classes are based off dictionaries so it can be easily converted to JSON. The main classes are the Infobox class, the SVGMap class, the Coordinates class, and the MapData class.
 
-# Creating a map from a shapefile
+# from_shapefile(): Create a Coordinates object from a shapefile
 
 Shapefiles are read based on the PySHP library and then converted to a format that can be used to make an SVG map. Use the Coordinates class to load a map. Numbers will be printed showing the progress loading as it may take a while.
-
 ## Parameters
 
 The only required parameters are the file and the recordId. There are also many optional parameters.
