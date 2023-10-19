@@ -39,6 +39,19 @@ function loadMap(){
 	var choropleth_green_range = choropleth_green_max - choropleth_green_min;
 	var choropleth_blue_range = choropleth_blue_max - choropleth_blue_min;
 
+	//Border info
+	var border_info = data["borders"];
+	var border_width = border_info["stroke-width"];
+	var border_red = border_info["colors"]["r"];
+	var border_green = border_info["colors"]["g"];
+	var border_blue = border_info["colors"]["b"];
+
+	//Background colors
+	var bc = data["background_color"];
+	var bc_red = bc["r"];
+	var bc_green = bc["g"];
+	var bc_blue = bc["b"];
+
 	//Ordered list of territories
 	var territory_list = data["data"]["territory_list"];
 
@@ -61,6 +74,8 @@ function loadMap(){
 	var pointX;
 	var pointY;
 
+	entireSVG.setAttributeNS(null,"style","background-color:rgb(" + bc_red + "," + bc_green + "," + bc_blue + ")");
+
 	for (var countryData in svgPoints){
 		polyPoints = ""
 		for (jsonPoint in svgPoints[countryData]["Points"]){
@@ -72,7 +87,9 @@ function loadMap(){
 		poly = document.createElementNS("http://www.w3.org/2000/svg","polygon");
 		poly.setAttributeNS(null,"points",polyPoints);
 		poly.setAttributeNS(null,"class",svgPoints[countryData]["Country"]);
-		poly.setAttributeNS(null,"style","fill:lime;stroke:purple;stroke-width:0.5");
+		poly.setAttributeNS(null,"style","fill:lime");
+		poly.setAttributeNS(null,"stroke-width",border_width);
+		poly.setAttributeNS(null,"stroke","rgb(" + border_red + "," + border_green + "," + border_blue + ")");
 		svg.appendChild(poly);
 
 	}
@@ -108,7 +125,12 @@ function colorMap(){
 		country = document.getElementsByClassName(territory_list[j]);
 	
 		//Scale data
-		var data_proportional = (choropleth[j] - choropleth_min) / choropleth_range;
+		if (choropleth_range == 0){
+			var data_proportional = 1;
+		}
+		else{
+			var data_proportional = (choropleth[j] - choropleth_min) / choropleth_range;
+		}
 	
 		//Calculate colors
 		var red = data_proportional * choropleth_red_range + choropleth_red_min;
