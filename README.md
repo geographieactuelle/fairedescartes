@@ -23,7 +23,7 @@ The only required parameters are the file and the recordId. There are also many 
 
 The location of the file to be read.
 
-### recordId
+### record_id
 
 The column number of the shape record. Columns start at 0. This will be used to match shapes with data. Only one is permitted.
 
@@ -35,25 +35,29 @@ The resolution. By default this is 10, meaning that points are rounded to 1/10 o
 
 Used to exclude small islands or shapes. By default only shapes with a single coordinate are excluded. This value is an integer corresponding to the highest number of coordinates a shape could have and be excluded.
 
-### countries
+### poly_keep
 
 Chooses which shapes to include based on shape records. Takes a list. Leaving blank or entering a blank list will include all shapes or countries.
 
-### zoom and translate
-
-These are two important parameters that allow only a certain portion of the map to be shown.
-
-#### zoom
+### zoom
 
 This chooses what proportion of the map should be shown. It is by default 1. For example, if it is 2 it will show only half of the latitude values and half of the longitude values so only 1/4 of the map.
 
-#### translate
+### translate
 
 After zooming in, allows choosing which part of the map to see. Accepts a list of two values that correspond to the coordinates fo the bottom-left corner that should be shown. Note that these are always positive, so for the latitude add 90 and the longitude add 180. Longitude comes first.
 
-### height and width
+### height
 
-The height and width of the map as it appears on the screen.
+The height of the map, 180 by default
+
+### width
+
+The width of the map, 360 by default
+
+### extra_smooth
+
+Makes the map lower resolution, slightly smoother. By default false.
 
 ## Understanding the dictionary
 
