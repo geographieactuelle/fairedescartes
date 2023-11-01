@@ -237,12 +237,13 @@ def _get_geojson_feature_list(geojson: dict, res: int, isl: int) -> list:
 
         if geojson['geometry']['type'] == 'MultiPolygon':
             new_poly_list = []
-            for polygon in geojson['geometry']['coordinates'][0]:
+            for polygon in geojson['geometry']['coordinates']:
+                actual_polygon = polygon[0]
                 polygon_fixed = []
                 polygon_str = []
                 for_deletion = []
-                for i in range(0, len(polygon)):
-                    coord = polygon[i]
+                for i in range(0, len(actual_polygon)):
+                    coord = actual_polygon[i]
                     coord[0] += 180
                     coord[1] += 90
                     coord[0] = round(coord[0] * res) / res
@@ -254,7 +255,7 @@ def _get_geojson_feature_list(geojson: dict, res: int, isl: int) -> list:
                         polygon_str.append(str_coord)
                         polygon_fixed.append(coord)
                 for i in for_deletion:
-                    del polygon[i]
+                    del actual_polygon[i]
                 new_poly = {'type': 'MultiPolygon', 'coordinates': polygon_fixed, 'properties': geojson['properties']}
                 if len(new_poly['coordinates']) > isl:
                     new_poly_list.append(new_poly)
