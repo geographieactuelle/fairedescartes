@@ -12,52 +12,72 @@ The PySHP library is required in order for the library to work. A shapefile of t
 
 All classes are based off dictionaries so it can be easily converted to JSON. The main classes are the Infobox class, the SVGMap class, the Coordinates class, and the MapData class.
 
-# from_shapefile() and from_geojson(): Create a Coordinates object from a shapefile or geojson file
+# Coordinates class
+
+## Creating a Coordinates object directly
+
+This is possible but not recommended.
+
+### Parameters
+
+#### coords
+
+A list of dictionaries containing the coordinates, equivalent to `['data']` in the dictionary (see below)
+
+#### records
+
+A list of all the records associated with each shape.
+
+#### zoom, translate, height, and width
+
+See below
+
+## from_shapefile() and from_geojson(): Create a Coordinates object from a shapefile or geojson file
 
 Shapefiles are read based on the PySHP library and then converted to a format that can be used to make an SVG map. Use the Coordinates class to load a map. Numbers will be printed showing the progress loading as it may take a while.
-## Parameters
+### Parameters
 
 The only required parameters are the file and the recordId. There are also many optional parameters.
 
-### file
+#### file
 
 The location of the file to be read.
 
-### record_id
+#### record_id
 
 In a shapefile: The column number of the shape record that will serve as the name of each polygon. Columns start at 0. This will be used to match shapes with data. Only one is permitted.
 
 In a geojson file: The name of the property that will serve as the name of each polygon.
 
-### res
+#### res
 
 The resolution. By default this is 10, meaning that points are rounded to 1/10 of a unit of latitude and longitude. Lower resolutions load faster but higher are more accurate.
 
-### isl
+#### isl
 
 Used to exclude small islands or shapes. By default only shapes with a single coordinate are excluded. This value is an integer corresponding to the highest number of coordinates a shape could have and be excluded.
 
-### poly_keep
+#### poly_keep
 
 Chooses which shapes to include based on shape records. Takes a list. Leaving blank or entering a blank list will include all shapes or countries.
 
-### zoom
+#### zoom
 
 This chooses what proportion of the map should be shown. It is by default 1. For example, if it is 2 it will show only half of the latitude values and half of the longitude values so only 1/4 of the map.
 
-### translate
+#### translate
 
 After zooming in, allows choosing which part of the map to see. Accepts a list of two values that correspond to the coordinates fo the bottom-left corner that should be shown. Note that these are always positive, so for the latitude add 90 and the longitude add 180. Longitude comes first.
 
-### height
+#### height
 
 The height of the map, 180 by default
 
-### width
+#### width
 
 The width of the map, 360 by default
 
-### extra_smooth
+#### extra_smooth
 
 Makes the map lower resolution, slightly smoother. By default false. Feature only available for from_shapefile(), not for from_geojson()
 
@@ -84,6 +104,30 @@ Makes the map lower resolution, slightly smoother. By default false. Feature onl
 `['recordList']` is a list of all the shape records used. Spaces are removed.
 
 These can all be modified at any time.
+
+## merge()
+
+Merges with another Coordinates object
+
+### Parameters
+
+#### coords
+
+A second Coordinates object
+
+## modify_record()
+
+Modifies a record in both the record list and in the list of points.
+
+### Parameters
+
+#### record
+
+If this is an integer, it is the index of the record to be modified, if it is a string, it is the record itself.
+
+#### new
+
+The new value for the record.
 
 # Importing data
 
