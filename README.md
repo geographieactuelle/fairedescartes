@@ -1,7 +1,7 @@
 ﻿# Introduction
 
 
-This is a library to make an interactive Javascript-based SVG map within minutes. It can make a choropleth map from a Shapefile, add an infobox to the map, change map data, and more.
+This is a library to make an interactive Javascript-based SVG map within minutes. It can make a choropleth map from a Shapefile or geojson file, add an infobox to the map, change map data, and more.
 
 
 ## Requirements
@@ -12,20 +12,22 @@ The PySHP library is required in order for the library to work. A shapefile of t
 
 All classes are based off dictionaries so it can be easily converted to JSON. The main classes are the Infobox class, the SVGMap class, the Coordinates class, and the MapData class.
 
-# from_shapefile(): Create a Coordinates object from a shapefile
+# from_shapefile() and from_geojson(): Create a Coordinates object from a shapefile or geojson file
 
 Shapefiles are read based on the PySHP library and then converted to a format that can be used to make an SVG map. Use the Coordinates class to load a map. Numbers will be printed showing the progress loading as it may take a while.
 ## Parameters
 
 The only required parameters are the file and the recordId. There are also many optional parameters.
 
-### File
+### file
 
 The location of the file to be read.
 
 ### record_id
 
-The column number of the shape record. Columns start at 0. This will be used to match shapes with data. Only one is permitted.
+In a shapefile: The column number of the shape record that will serve as the name of each polygon. Columns start at 0. This will be used to match shapes with data. Only one is permitted.
+
+In a geojson file: The name of the property that will serve as the name of each polygon.
 
 ### res
 
@@ -57,7 +59,7 @@ The width of the map, 360 by default
 
 ### extra_smooth
 
-Makes the map lower resolution, slightly smoother. By default false.
+Makes the map lower resolution, slightly smoother. By default false. Feature only available for from_shapefile(), not for from_geojson()
 
 ## Understanding the dictionary
 
