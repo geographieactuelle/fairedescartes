@@ -2,6 +2,7 @@ from __future__ import annotations
 import shapefile
 import json
 from colour import Color
+import csv
 
 
 class ChoroplethColourRange(dict):
@@ -83,6 +84,10 @@ class Coordinates(dict):
         if zoom is None:
             self.automatic_zoom_and_translate(relative_zoom)
         self['recordList'] = records
+
+    def record_list_to_csv(self, location='MapData.csv'):
+        with open(location, 'w') as file:
+            file.write('territory_list\n' + '\n'.join(self['recordList']))
 
     def merge(self, coords: Coordinates, adjust_zoom=True, relative_zoom=1.1) -> None:
         self['recordList'] = self['recordList'] + coords['recordList']
@@ -388,3 +393,24 @@ def from_geojson(file: str, record_id: str, res=5, isl=1, poly_keep=None, zoom=N
                                'Country': record_list[i]}
 
     return Coordinates(coordinates_list, record_list, zoom, translate, height, width, relative_zoom)
+
+
+def from_csv(location: str, territory_list=0) -> MapData:
+    columns = []
+    with open(location) as csvfile:
+        reader = csv.reader(csvfile)
+        for line in reader:
+            for i in range(0, len(line)):
+                try:
+                    line[i] = int(line[i])
+                except ValueError:
+                    pass
+                try:
+                    columns[i].append(line[i])
+                except IndexError:
+                    columns.append([])
+                    columns[i].append(line[i])
+        data = {}
+        for column in columns:
+            data[column[0]] = column[1:]
+        return MapData(data, columns[territory_list][0])
