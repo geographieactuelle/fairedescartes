@@ -1,11 +1,78 @@
 from __future__ import annotations
 import shapefile
 import json
+from colour import Color
+
+
+class ChoroplethColourRange(dict):
+
+    def __init__(self, c1: Color, c2: Color):
+        super().__init__()
+        self['start'] = c1.get_hex_l()
+        self['end'] = c2.get_hex_l()
+
+
+class ChoroplethColourScheme(dict):
+
+    def __init__(self):
+        super().__init__()
+        self['source'] = None
+        self['colours'] = []
+
+    def add_colour(self, colour: Color | ChoroplethColourRange, values: list | str, values_type='list', color_id=None):
+        colour_dict = {'values_type': values_type}
+        if type(colour) == Color:
+            colour_dict['colour_type'] = 'single'
+            colour_dict['colour'] = colour.get_hex_l()
+        elif type(colour) == ChoroplethColourRange:
+            colour_dict['colour_type'] = 'range'
+            colour_dict['colour'] = colour
+        else:
+            raise TypeError('Invalid color')
+        if type(values) == list:
+            colour_dict['values'] = values
+        else:
+            colour_dict['values'] = [values]
+        if color_id is None:
+            colour_dict['id'] = str(len(self['colours']))
+        else:
+            colour_dict['id'] = color_id
+        self['colours'].append(colour_dict)
+
+    def remove_color(self, colour: Color):
+        for c in self['colours']:
+            if c['colour'] == colour.get_hex_l():
+                del c
+                break
+
+    def remove_color_by_id(self, colour_id):
+        for c in self['colours']:
+            if c['id'] == colour_id:
+                del c
+                break
+
+    def remove_value(self, value, colour=None, colour_id=None):
+        for c in self['colours']:
+            if c['values_type'] == 'list':
+                if (colour is None and colour_id is None) or c['colour'] == colour.get_hex_l() or c['id'] == colour_id:
+                    if value in c['values']:
+                        value_index = c['values'].index(value)
+                        del c[value_index]
+                        break
+
+    def add_values_from_color(self, values, colour):
+        for c in self['colours']:
+            if c['values_type'] == 'list' and c['colour'] == colour.get_hex_l():
+                if type(values) == str:
+                    c['values'].append(values)
+                else:
+                    c['values'] = c['values'] + values
+                break
 
 
 class Coordinates(dict):
 
-    def __init__(self, coords, records, zoom=1, translate=None, height=180, width=360):
+    def __init__(self, coords, records, zoom=None, translate=None, height=180, width=360, relative_zoom=1.1):
         super().__init__()
 
         if translate is None:
@@ -13,11 +80,16 @@ class Coordinates(dict):
 
         self['data'] = coords
         self['metadata'] = {'scale': zoom, 'translate': translate, 'height': height, 'width': width}
+        if zoom is None:
+            self.automatic_zoom_and_translate(relative_zoom)
         self['recordList'] = records
 
-    def merge(self, coords: Coordinates) -> None:
+    def merge(self, coords: Coordinates, adjust_zoom=True, relative_zoom=1.1) -> None:
         self['recordList'] = self['recordList'] + coords['recordList']
         self['data'] = self['data'] + coords['data']
+
+        if adjust_zoom:
+            self.automatic_zoom_and_translate(relative_zoom)
 
     def modify_record(self, record: str | int, new: str) -> None:
         if type(record) == str:
@@ -32,6 +104,37 @@ class Coordinates(dict):
         else:
             self['recordList'][record] = new
             self['data'][record]['Country'] = new
+
+    def automatic_zoom_and_translate(self, relative_zoom=1.1) -> None:
+        max_long = float(self['data'][0]['Points'][0][0])
+        min_long = max_long
+        max_lat = float(self['data'][0]['Points'][0][1])
+        min_lat = max_lat
+        for shape in self['data']:
+            for point in shape['Points']:
+                float_long = float(point[0])
+                float_lat = float(point[1])
+                if float_long > max_long:
+                    max_long = float_long
+                if float_long < min_long:
+                    min_long = float_long
+                if float_lat > max_lat:
+                    max_lat = float_lat
+                if float_lat < min_lat:
+                    min_lat = float_lat
+
+        self['metadata']['translate'] = [min_long, min_lat]
+        diff_long = max_long - min_long
+        diff_lat = max_lat - min_lat
+        zoom_long = int(360 / diff_long)
+        zoom_lat = int(180 / diff_lat)
+        if zoom_long < zoom_lat:
+            self['metadata']['scale'] = zoom_long
+        else:
+            self['metadata']['scale'] = zoom_lat
+        self['metadata']['scale'] = int(self['metadata']['scale'] / relative_zoom)
+        self['metadata']['translate'][0] -= diff_long * (relative_zoom - 1) / 2
+        self['metadata']['translate'][1] -= diff_lat * (relative_zoom - 1) / 2
 
 
 # Builds the MapData class
@@ -119,14 +222,10 @@ class SVGMap(dict):
     def __init__(self, data=None, coords=None) -> None:
         super().__init__()
         self['map'] = coords
-        self['choropleth'] = {}
-        self['choropleth']['source'] = None
-        self['choropleth']['colors'] = {}
-        self['choropleth']['colors']['r'] = [0, 255]
-        self['choropleth']['colors']['g'] = [0, 255]
-        self['choropleth']['colors']['b'] = [0, 255]
+        self['choropleth'] = ChoroplethColourScheme()
         self['layers'] = []
         self['infobox'] = Infobox()
+        self['download'] = False
 
         # borders
         self['borders'] = {}
@@ -159,8 +258,8 @@ class SVGMap(dict):
         file.close()
 
 
-def from_shapefile(file: str, record_id: int, res=5, isl=1, poly_keep=None, zoom=1, translate=None, height=180,
-                   width=360, extra_smooth=False) -> Coordinates:
+def from_shapefile(file: str, record_id: int, res=5, isl=1, poly_keep=None, zoom=None, translate=None, height=180,
+                   width=360, relative_zoom=1.1, extra_smooth=False) -> Coordinates:
 
     if poly_keep is None:
         poly_keep = []
@@ -219,7 +318,7 @@ def from_shapefile(file: str, record_id: int, res=5, isl=1, poly_keep=None, zoom
                             rounded.append(rounded_data)
         record_list.append(shp.shapeRecord(i - 1).record[record_id].replace(' ', ''))
     # Create object from the points
-    return Coordinates(svg, record_list, zoom, translate, height, width)
+    return Coordinates(svg, record_list, zoom, translate, height, width, relative_zoom)
 
 
 def _get_geojson_feature_list(geojson: dict, res: int, isl: int) -> list:
@@ -248,7 +347,9 @@ def _get_geojson_feature_list(geojson: dict, res: int, isl: int) -> list:
                     coord[1] += 90
                     coord[0] = round(coord[0] * res) / res
                     coord[1] = round(coord[1] * res) / res
-                    str_coord = str(coord[0]) + ',' + str(coord[1])
+                    coord[0] = str(coord[0])
+                    coord[1] = str(coord[1])
+                    str_coord = coord[0] + ',' + coord[1]
                     if str_coord in polygon_str:
                         for_deletion.insert(0, i)
                     else:
@@ -268,8 +369,8 @@ def _get_geojson_feature_list(geojson: dict, res: int, isl: int) -> list:
         raise TypeError('Not a valid geojson file')
 
 
-def from_geojson(file: str, record_id: str, res=5, isl=1, poly_keep=None, zoom=1, translate=None,
-                 height=180, width=360) -> Coordinates:
+def from_geojson(file: str, record_id: str, res=5, isl=1, poly_keep=None, zoom=None, translate=None,
+                 height=180, width=360, relative_zoom=1.1) -> Coordinates:
     if poly_keep is None:
         poly_keep = []
     with open(file) as geojson_txt:
@@ -286,4 +387,4 @@ def from_geojson(file: str, record_id: str, res=5, isl=1, poly_keep=None, zoom=1
         coordinates_list[i] = {'Points': coordinates_list[i],
                                'Country': record_list[i]}
 
-    return Coordinates(coordinates_list, record_list, zoom, translate, height, width)
+    return Coordinates(coordinates_list, record_list, zoom, translate, height, width, relative_zoom)

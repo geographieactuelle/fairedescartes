@@ -28,16 +28,16 @@ function loadMap(){
 	var choropleth_range = choropleth_max - choropleth_min;
 
 	//Choropleth map colors
-	var choropleth_colors = data["choropleth"]["colors"];
-	var choropleth_red_min = choropleth_colors["r"][0];
-	var choropleth_red_max = choropleth_colors["r"][1];
-	var choropleth_green_min = choropleth_colors["g"][0];
-	var choropleth_green_max = choropleth_colors["g"][1];
-	var choropleth_blue_min = choropleth_colors["b"][0];
-	var choropleth_blue_max = choropleth_colors["b"][1];
-	var choropleth_red_range = choropleth_red_max - choropleth_red_min;
-	var choropleth_green_range = choropleth_green_max - choropleth_green_min;
-	var choropleth_blue_range = choropleth_blue_max - choropleth_blue_min;
+	//var choropleth_colors = data["choropleth"]["colors"];
+	//var choropleth_red_min = choropleth_colors["r"][0];
+	//var choropleth_red_max = choropleth_colors["r"][1];
+	//var choropleth_green_min = choropleth_colors["g"][0];
+	//var choropleth_green_max = choropleth_colors["g"][1];
+	//var choropleth_blue_min = choropleth_colors["b"][0];
+	//var choropleth_blue_max = choropleth_colors["b"][1];
+	//var choropleth_red_range = choropleth_red_max - choropleth_red_min;
+	//var choropleth_green_range = choropleth_green_max - choropleth_green_min;
+	//var choropleth_blue_range = choropleth_blue_max - choropleth_blue_min;
 
 	//Border info
 	var border_info = data["borders"];
@@ -99,21 +99,10 @@ function colorMap(){
 
 	//Choropleth map data
 	var choropleth = data["data"]["data"][data["choropleth"]["source"]];
-	var choropleth_min = Math.min.apply(null,choropleth);
-	var choropleth_max = Math.max.apply(null,choropleth);
-	var choropleth_range = choropleth_max - choropleth_min;
+	
 
 	//Choropleth map colors
-	var choropleth_colors = data["choropleth"]["colors"];
-	var choropleth_red_min = choropleth_colors["r"][0];
-	var choropleth_red_max = choropleth_colors["r"][1];
-	var choropleth_green_min = choropleth_colors["g"][0];
-	var choropleth_green_max = choropleth_colors["g"][1];
-	var choropleth_blue_min = choropleth_colors["b"][0];
-	var choropleth_blue_max = choropleth_colors["b"][1];
-	var choropleth_red_range = choropleth_red_max - choropleth_red_min;
-	var choropleth_green_range = choropleth_green_max - choropleth_green_min;
-	var choropleth_blue_range = choropleth_blue_max - choropleth_blue_min;
+	var choropleth_colors = data["choropleth"]["colours"];
 
 	//Ordered list of territories
 	var territory_list = data["data"]["territory_list"];
@@ -123,7 +112,47 @@ function colorMap(){
 	
 		//Get country on map
 		country = document.getElementsByClassName(territory_list[j]);
-	
+
+		data_value = choropleth[j];
+		
+		for(var k in choropleth_colors){
+			if(choropleth_colors[k]["values_type"] == "list"){
+				if(choropleth_colors[k]["values"].includes(data_value)){
+					for (var i = 0; i < country.length; i++){
+						console.log(choropleth_colors[k]["colour"]);
+						country[i].style.fill = choropleth_colors[k]["colour"];
+						country[i].setAttribute("onmousemove",data["inputs"]["onHover"].replaceAll("[COUNTRY]",j));
+						country[i].setAttribute("onmouseout",data["inputs"]["onMouseOut"].replaceAll("[COUNTRY]",j));
+						country[i].setAttribute("onclick",data["inputs"]["onClick"].replaceAll("[COUNTRY]",j));
+					}
+				}
+			} else {
+				values_range = choropleth_colors[k]["values"];
+				if(values_range[0] < data_value && values_range[1] > data_value){
+					if(choropleth_colors[k]["colour_type"] == "single"){
+						for (var i = 0; i < country.length; i++){
+							country[i].style.fill = choropleth_colors[k]["colour"].replace("#","%23");
+							country[i].setAttribute("onmousemove",data["inputs"]["onHover"].replaceAll("[COUNTRY]",j));
+							country[i].setAttribute("onmouseout",data["inputs"]["onMouseOut"].replaceAll("[COUNTRY]",j));
+							country[i].setAttribute("onclick",data["inputs"]["onClick"].replaceAll("[COUNTRY]",j));
+						}
+					} else {
+	letter_dict = {"0":0,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,"a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15};
+	choropleth_color_range = choropleth_colors[k]["colour"];
+	var choropleth_red_min = letter_dict[choropleth_color_range["start"][1]] * 16 + letter_dict[choropleth_color_range["start"][2]];
+	var choropleth_red_max = letter_dict[choropleth_color_range["end"][1]] * 16 + letter_dict[choropleth_color_range["end"][2]];
+	var choropleth_green_min = letter_dict[choropleth_color_range["start"][3]] * 16 + letter_dict[choropleth_color_range["start"][4]];;
+	var choropleth_green_max = letter_dict[choropleth_color_range["end"][3]] * 16 + letter_dict[choropleth_color_range["end"][4]];;
+	var choropleth_blue_min = letter_dict[choropleth_color_range["start"][5]] * 16 + letter_dict[choropleth_color_range["start"][6]];;
+	var choropleth_blue_max = letter_dict[choropleth_color_range["end"][5]] * 16 + letter_dict[choropleth_color_range["end"][6]];;
+	var choropleth_red_range = choropleth_red_max - choropleth_red_min;
+	var choropleth_green_range = choropleth_green_max - choropleth_green_min;
+	var choropleth_blue_range = choropleth_blue_max - choropleth_blue_min;
+
+	var choropleth_min = choropleth_colors[k]["values"][0];
+	var choropleth_max = choropleth_colors[k]["values"][1];
+	var choropleth_range = choropleth_max - choropleth_min;
+
 		//Scale data
 		if (choropleth_range == 0){
 			var data_proportional = 1;
@@ -138,6 +167,7 @@ function colorMap(){
 		var blue = data_proportional * choropleth_blue_range + choropleth_blue_min;
 
 		var color = "rgb(" + red + "," + green + "," + blue + ")";
+		console.log(color);
 
 		for (var i = 0; i < country.length; i++){
 			country[i].style.fill = color;
@@ -145,6 +175,12 @@ function colorMap(){
 			country[i].setAttribute("onmouseout",data["inputs"]["onMouseOut"].replaceAll("[COUNTRY]",j));
 			country[i].setAttribute("onclick",data["inputs"]["onClick"].replaceAll("[COUNTRY]",j));
 		}
+					}
+				}
+			}
+		}
+	
+		
 	}
 }
 
