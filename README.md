@@ -63,11 +63,11 @@ Chooses which shapes to include based on shape records. Takes a list. Leaving bl
 
 #### zoom
 
-This chooses what proportion of the map should be shown. It is by default 1. For example, if it is 2 it will show only half of the latitude values and half of the longitude values so only 1/4 of the map.
+This chooses what proportion of the map should be shown. It is by default None. For example, if it is 2 it will show only half of the latitude values and half of the longitude values so only 1/4 of the map. If it is None, it will zoom automatically based on the coordinates of the shapes involved.
 
 #### translate
 
-After zooming in, allows choosing which part of the map to see. Accepts a list of two values that correspond to the coordinates fo the bottom-left corner that should be shown. Note that these are always positive, so for the latitude add 90 and the longitude add 180. Longitude comes first.
+After zooming in, allows choosing which part of the map to see. Accepts a list of two values that correspond to the coordinates for the bottom-left corner that should be shown. Note that these are always positive, so for the latitude add 90 and the longitude add 180. Longitude comes first. It is by default None. If it is None, it will translate automatically based on the coordinates of the shapes involved.
 
 #### height
 
@@ -76,6 +76,10 @@ The height of the map, 180 by default
 #### width
 
 The width of the map, 360 by default
+
+#### relative_zoom
+
+Only affects the map if `zoom is None`. Note that higher numbers correspond to zooming out. Affects the zoom relative to the automatically-generated zoom level. By default 1.1.
 
 #### extra_smooth
 
