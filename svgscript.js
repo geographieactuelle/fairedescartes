@@ -141,10 +141,10 @@ function colorMap(){
 	choropleth_color_range = choropleth_colors[k]["colour"];
 	var choropleth_red_min = letter_dict[choropleth_color_range["start"][1]] * 16 + letter_dict[choropleth_color_range["start"][2]];
 	var choropleth_red_max = letter_dict[choropleth_color_range["end"][1]] * 16 + letter_dict[choropleth_color_range["end"][2]];
-	var choropleth_green_min = letter_dict[choropleth_color_range["start"][3]] * 16 + letter_dict[choropleth_color_range["start"][4]];;
-	var choropleth_green_max = letter_dict[choropleth_color_range["end"][3]] * 16 + letter_dict[choropleth_color_range["end"][4]];;
-	var choropleth_blue_min = letter_dict[choropleth_color_range["start"][5]] * 16 + letter_dict[choropleth_color_range["start"][6]];;
-	var choropleth_blue_max = letter_dict[choropleth_color_range["end"][5]] * 16 + letter_dict[choropleth_color_range["end"][6]];;
+	var choropleth_green_min = letter_dict[choropleth_color_range["start"][3]] * 16 + letter_dict[choropleth_color_range["start"][4]];
+	var choropleth_green_max = letter_dict[choropleth_color_range["end"][3]] * 16 + letter_dict[choropleth_color_range["end"][4]];
+	var choropleth_blue_min = letter_dict[choropleth_color_range["start"][5]] * 16 + letter_dict[choropleth_color_range["start"][6]];
+	var choropleth_blue_max = letter_dict[choropleth_color_range["end"][5]] * 16 + letter_dict[choropleth_color_range["end"][6]];
 	var choropleth_red_range = choropleth_red_max - choropleth_red_min;
 	var choropleth_green_range = choropleth_green_max - choropleth_green_min;
 	var choropleth_blue_range = choropleth_blue_max - choropleth_blue_min;
