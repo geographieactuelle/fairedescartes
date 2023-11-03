@@ -139,9 +139,31 @@ The new value for the record.
 
 The MapData class is responsible for managing data. The only two parameters are the dictionary with the data and the territory list.
 
-## Basic format
+## Using the MapData() initializer
 
-The data must be a dictionary. The dictionary must contain only several lists whose values correspond to each other (for example, the 32nd value of one list must be for the same territory as the 32nd value of another.
+### Parameters
+
+#### data
+
+Must be a dictionary containing several lists of data. (The keys should be strings.)
+
+#### tlist
+
+The name of the key corresponding to the list of territories in the data. By default 'territory_list'.
+
+## from_csv()
+
+Imports data from a csv file.
+
+### Parameters
+
+#### location
+
+The location of the file
+
+#### territory_list
+
+The column number of the territory list. By default 0.
 
 ## The territory list
 
