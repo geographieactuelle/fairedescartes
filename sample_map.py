@@ -7,7 +7,9 @@ from colour import Color
 # The purpose of this is because in my example map I only want the regions of Palestine in Gaza.
 # These two extra values are NOT necessary and the program will work just fine without them.
 
-coords = pymap.from_shapefile('geoBoundaries-PSE-ADM2-all/geoBoundaries-PSE-ADM2.shp', 1, 1000, poly_keep=['Rafah', 'North Gaza', 'Gaza', 'Khan Yunis', 'Deir Al Balah'])
+# Shapefile credit: geoBoundaries (https://www.geoboundaries.org)
+
+coords = pymap.from_shapefile('geoboundaries-PSE-ADM2-all/geoBoundaries-PSE-ADM2.shp', 1, 1000, poly_keep=['Rafah', 'North Gaza', 'Gaza', 'Khan Yunis', 'Deir Al Balah'])
 
 map_data = pymap.from_csv('sample_map.csv')
 
