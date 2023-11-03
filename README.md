@@ -3,6 +3,8 @@
 
 This is a library to make an interactive Javascript-based SVG map within minutes. It can make a choropleth map from a Shapefile or geojson file, add an infobox to the map, change map data, and more.
 
+If you do not have programming experience, please read the instructions in the template in example.py
+
 
 ## Requirements
 
