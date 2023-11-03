@@ -241,7 +241,7 @@ Use `['choropleth']['source']` to denote the list name containing the data to co
 
 ### Choosing colors
 
-Use `['choropleth']['colors']['r']` for the red. Green and blue are chosen similarly. This should be a list with only two items: The first the red at the lowest point in the dataset and the second the red at the highest.
+Documentation coming soon. See pymap.py, example.py, and sample_map.py for usage.
 
 ## Making it interactive
 
