@@ -9,7 +9,7 @@ from colour import Color
 
 # Shapefile credit: geoBoundaries (https://www.geoboundaries.org)
 
-coords = pymap.from_shapefile('geoboundaries-PSE-ADM2-all/geoBoundaries-PSE-ADM2.shp', 1, 1000, poly_keep=['Rafah', 'North Gaza', 'Gaza', 'Khan Yunis', 'Deir Al Balah'])
+coords = pymap.from_shapefile('https://github.com/geographieactuelle/fairedescartes/raw/main/geoboundaries-PSE-ADM2-all/geoBoundaries-PSE-ADM2.shp', 1, 1000, poly_keep=['Rafah', 'North Gaza', 'Gaza', 'Khan Yunis', 'Deir Al Balah'])
 
 map_data = pymap.from_csv('sample_map.csv')
 
