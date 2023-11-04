@@ -1,14 +1,12 @@
 ﻿# Introduction
 
-
 This is a library to make an interactive Javascript-based SVG map within minutes. It can make a choropleth map from a Shapefile or geojson file, add an infobox to the map, change map data, and more.
 
 If you do not have programming experience, please read the instructions in the template in example.py
 
+## Installation
 
-## Requirements
-
-The PySHP library is required in order for the library to work. A shapefile of the region to be mapped is also required. Also, adding data is also required.
+Use `pip install geographie`
 
 ## Basic concepts
 
@@ -177,7 +175,7 @@ The parameter tlist is by default territory_list. This shows which list is the l
 
 # Making an infobox
 
-The Infobox class has no parameters.
+The Infobox class has no parameters. NOTE: This class has not been updated since 2021.
 
 ## Adding text
 
@@ -235,13 +233,22 @@ Requires two parameters: a MapData object and a Coordinates object.
 
 Use `['infobox'] = infobox_object`
 
-## Coloring the map
+# Adding colour
 
-Use `['choropleth']['source']` to denote the list name containing the data to color the map.
+The `ChoroplethColourScheme` class does this.
 
-### Choosing colors
+## Linking colour to data
 
-Documentation coming soon. See pymap.py, example.py, and sample_map.py for usage.
+`map_data = MapData({'territory_list': ['some', 'list', 'of', 'territories'], 'data_to_colour': [1, 2, 3, 4]})
+colours = ChoroplethColourScheme()
+colours['source'] = 'data_to_colour'`
+
+## Adding a colour
+
+`colours = ChoroplethColourScheme()
+`my_colour = Color(hex_l='#316293')
+colours.add_colour(my_colour, [1, 2, 3, 4])`
+where `[1, 2, 3, 4]` is the list of values that would result in a territory being coloured as `my_colour` on a map.
 
 ## Making it interactive
 
