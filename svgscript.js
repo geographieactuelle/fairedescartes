@@ -42,12 +42,12 @@ function loadMap(){
 	//Border info
 	var border_info = data["borders"];
 	var border_width = border_info["stroke-width"];
-	var border_red = border_info["colors"]["r"];
-	var border_green = border_info["colors"]["g"];
-	var border_blue = border_info["colors"]["b"];
+	var border_red = border_info["colour"]["r"];
+	var border_green = border_info["colour"]["g"];
+	var border_blue = border_info["colour"]["b"];
 
 	//Background colors
-	var bc = data["background_color"];
+	var bc = data["background_colour"];
 	var bc_red = bc["r"];
 	var bc_green = bc["g"];
 	var bc_blue = bc["b"];
