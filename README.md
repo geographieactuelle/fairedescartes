@@ -240,14 +240,19 @@ The `ChoroplethColourScheme` class does this.
 ## Linking colour to data
 
 `map_data = MapData({'territory_list': ['some', 'list', 'of', 'territories'], 'data_to_colour': [1, 2, 3, 4]})
+
 colours = ChoroplethColourScheme()
+
 colours['source'] = 'data_to_colour'`
 
 ## Adding a colour
 
 `colours = ChoroplethColourScheme()
-`my_colour = Color(hex_l='#316293')
+
+my_colour = Color(hex_l='#316293')
+
 colours.add_colour(my_colour, [1, 2, 3, 4])`
+
 where `[1, 2, 3, 4]` is the list of values that would result in a territory being coloured as `my_colour` on a map.
 
 ## Making it interactive
