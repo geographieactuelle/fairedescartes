@@ -1,11 +1,3 @@
-//IMPORTANT INFORMATION:
-//The JavaScript component is the main component of the code.
-//The variable data is the dataset containing the information to build the map and is already defined based on the Python code.
-//This is based on HTML and SVG. It only runs with the right HTML and SVG already existing.
-
-//A choropleth map is a map where shapes are filled in, such as countries in the map in this program.
-
-
 loadMap();
 function loadMap(){
 
